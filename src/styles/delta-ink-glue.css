@@ -1,0 +1,284 @@
+/**
+ * TipTap ↔ 编辑器 结构适配。
+ * 正文观感以 resources/editor + 主题为准；
+ * 这里只修 TipTap DOM 与官方选择器之间的错位——不再“创新”布局。
+ */
+
+/* ——— 编辑根 ——— */
+#write.ProseMirror {
+  outline: none;
+  min-height: 60vh;
+}
+
+#write p.is-editor-empty:first-child::before {
+  color: rgba(0, 0, 0, 0.3);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ——— 删除线 ——— */
+#write s,
+#write del,
+#write strike {
+  text-decoration: line-through !important;
+}
+
+/* ——— 任务列表 ——— */
+#write ul.contains-task-list,
+#write ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 2em;
+}
+
+#write ul.contains-task-list > li.md-task-list-item,
+#write ul[data-type='taskList'] > li.md-task-list-item {
+  list-style: none;
+  list-style-type: none;
+  position: relative;
+  padding-left: 0;
+}
+
+#write .md-task-list-item > input[type='checkbox'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: -1.3em;
+  margin-top: calc(1em - 10px);
+  border: none;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  -webkit-appearance: checkbox;
+  appearance: auto;
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+#write .md-task-list-item > div > p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#write .md-task-list-item.task-list-done > div,
+#write .md-task-list-item[data-checked='true'] > div {
+  opacity: 0.65;
+  text-decoration: line-through;
+}
+
+/*
+ * ——— 代码块 ———
+ * DOM:
+ *   div.react-renderer.node-codeBlock
+ *     div.md-fences.code-block-node[data-node-view-wrapper]  ← 主题画在这
+ *       pre.code-block-node__pre > code
+ *       div.code-tooltip > input.ty-cm-lang-input
+ */
+
+/* 外层只透传，不抢 fence 样式、不裁切语言条 */
+#write .react-renderer.node-codeBlock {
+  display: block;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* fence 本体：定位包含块 + 给语言条留空；灰底/边框交给主题 */
+#write .md-fences.code-block-node,
+#write .code-block-node.md-fences {
+  position: relative !important;
+  display: block;
+  overflow: visible !important;
+  white-space: normal;
+  /* 编辑器: .md-fences .code-tooltip { bottom: -2.5em } */
+  margin-bottom: 2.75em !important;
+}
+
+/* 内层 pre/code 不再套第二层灰盒（主题的 code{} 会误伤） */
+#write .md-fences.code-block-node > pre.code-block-node__pre,
+#write .code-block-node.md-fences > pre.code-block-node__pre {
+  margin: 0;
+  padding: 0 4px;
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: pre;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#write .md-fences.code-block-node > pre > code,
+#write .code-block-node.md-fences > pre > code {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0;
+  border-radius: 0;
+  font-size: inherit;
+  font-family: var(--monospace, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  white-space: inherit;
+  display: block;
+  color: inherit;
+}
+
+/*
+ * 语言条：对齐 编辑器 base-control
+ * 必须压过：input { background: var(--bg-color); border: 1px solid … }
+ */
+#write .md-fences .code-tooltip {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: -2.5em !important;
+  left: auto !important;
+  top: auto !important;
+  float: right;
+  z-index: 20;
+  opacity: 1;
+  width: auto;
+  line-height: 1;
+  font-size: 0.8em;
+  text-align: left;
+  padding: 0 20px !important;
+  border-radius: 2px;
+  background: inherit !important;
+  background-color: inherit !important;
+  box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.2);
+  border: 0 !important;
+  border-top: 1px solid #eef2f2 !important;
+  color: inherit;
+}
+
+#write .md-fences .code-tooltip .code-block-lang {
+  display: inline-block;
+  vertical-align: middle;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0;
+}
+
+#write .md-fences .code-tooltip input,
+#write .md-fences .code-tooltip input.ty-cm-lang-input,
+#write .md-fences .code-tooltip input.ty-input {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  margin: 2px 0 !important;
+  padding: 0 4px !important;
+  border-radius: 3px;
+  text-align: center;
+  min-width: 140px;
+  width: auto;
+  display: inline-block;
+  line-height: 1.5;
+  font: inherit;
+  font-size: inherit;
+  color: inherit !important;
+  color-scheme: inherit;
+  cursor: text;
+}
+
+#write .md-fences .code-tooltip input:focus {
+  outline: 1px solid #6eace2 !important;
+  outline-offset: 0;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.code-block-lang {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.code-block-lang__list {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  z-index: 40;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  min-width: 160px;
+  max-height: 220px;
+  overflow: auto;
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #333);
+  border: 1px solid #e7eaed;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.code-block-lang__option {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.code-block-lang__option.is-active,
+.code-block-lang__option:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.code-block-node__preview-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  margin-right: 6px;
+  cursor: pointer;
+  padding: 0 2px;
+  vertical-align: middle;
+}
+
+/* ——— 表格 / 图片 / 公式壳 ——— */
+#write .tableWrapper {
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+#write .tableWrapper > table {
+  margin: 0;
+}
+
+#write img.md-image {
+  max-width: 100%;
+  height: auto;
+}
+
+#write .md-math-input {
+  width: 100%;
+  font-family: var(--monospace, monospace);
+  font-size: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  color: inherit;
+  resize: vertical;
+}

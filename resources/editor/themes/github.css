@@ -1,0 +1,108 @@
+/**
+ * delta-ink bundled theme: github (MIT)
+ */
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #24292e;
+  --side-bar-bg-color: #f6f8fa;
+  --control-text-color: #586069;
+  --select-text-bg-color: #b3d4fc;
+  --item-hover-bg-color: rgba(209, 213, 218, 0.4);
+  --active-file-bg-color: #e1e4e8;
+  --window-border: 1px solid #e1e4e8;
+  --primary-color: #0366d6;
+  --monospace: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+#write {
+  max-width: 860px;
+}
+
+#write h1 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+  font-size: 2em;
+}
+
+#write h2 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+  font-size: 1.5em;
+}
+
+#write h3 { font-size: 1.25em; }
+#write h4 { font-size: 1em; }
+#write h5 { font-size: 0.875em; }
+#write h6 {
+  font-size: 0.85em;
+  color: #6a737d;
+}
+
+#write a {
+  color: #0366d6;
+}
+
+#write blockquote {
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+  padding: 0 1em;
+}
+
+#write code,
+tt {
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 3px;
+  font-size: 85%;
+  margin: 0;
+  padding: 0.2em 0.4em;
+  border: 0;
+}
+
+.md-fences,
+code,
+tt {
+  border: 1px solid #e7eaed;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.md-fences {
+  margin-bottom: 15px;
+  margin-top: 15px;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  background-color: #f8f8f8;
+}
+
+.code-tooltip {
+  box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.3);
+  border-top: 1px solid #eef2f2;
+}
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+#write table th,
+#write table td {
+  border: 1px solid #dfe2e5;
+  padding: 6px 13px;
+}
+
+#write table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+#write table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}

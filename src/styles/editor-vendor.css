@@ -1,0 +1,4 @@
+/**
+ * Editor vendor entry (MIT bundled styles under resources/editor).
+ */
+@import '../../resources/editor/base.css';
