@@ -14,6 +14,15 @@ dist/
 dist-ssr/
 src-tauri/target/
 
+# Local installers (published via GitHub Releases, not git blobs)
+releases/**/*.dmg
+releases/**/*.app
+releases/**/*.msi
+releases/**/*.exe
+releases/**/*.zip
+!releases/**/README.md
+
+
 # Logs
 logs
 *.log
