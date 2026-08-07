@@ -44,6 +44,16 @@
     "resources": [
       "../resources/editor"
     ],
+    "fileAssociations": [
+      {
+        "ext": ["md", "markdown", "mdown", "mkd", "mkdn"],
+        "name": "Markdown Document",
+        "description": "Markdown Document",
+        "mimeType": "text/markdown",
+        "role": "Editor",
+        "rank": "Default"
+      }
+    ],
     "macOS": {
       "dmg": {
         "appPosition": {

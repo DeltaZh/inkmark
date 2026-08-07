@@ -143,7 +143,12 @@ pub fn rebuild(app: &AppHandle<Wry>) -> tauri::Result<()> {
     let outline = item(app, "toggle-outline", "大纲", None)?;
     let file_tree = item(app, "toggle-file-tree", "文件树", None)?;
     let theme_item = item(app, "theme", "主题…", None)?;
-    let source_mode = item(app, "source-mode", "源代码模式", Some("CmdOrCtrl+/"))?;
+    let source_mode = item(
+        app,
+        "source-mode",
+        "切换源代码 / 所见即所得",
+        Some("CmdOrCtrl+/"),
+    )?;
     let focus_mode = item(app, "focus-mode", "专注模式", None)?;
     let typewriter = item(app, "typewriter-mode", "打字机模式", None)?;
 

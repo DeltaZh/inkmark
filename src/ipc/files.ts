@@ -26,6 +26,11 @@ export function openFile(): Promise<OpenedFile> {
   return invoke('open_file');
 }
 
+/** 冷启动时由系统传入、前端尚未监听时的待打开路径 */
+export function takePendingOpenPaths(): Promise<string[]> {
+  return invoke('take_pending_open_paths');
+}
+
 export type ImportedDocument = {
   path: string;
   kind: string;

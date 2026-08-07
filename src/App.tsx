@@ -26,6 +26,7 @@ import {
   openReadme,
   readFile,
   saveFileAs,
+  takePendingOpenPaths,
   writeFile
 } from './ipc/files';
 import { exportBinary, exportHtml, exportPdf } from './ipc/export';
@@ -314,6 +315,9 @@ function App() {
     [createTab, rememberMtime, rememberRecentFile, setActive, tabsState.tabs],
   );
 
+  const handleOpenPathRef = useRef(handleOpenPath);
+  handleOpenPathRef.current = handleOpenPath;
+
   const toggleOutlinePane = useCallback(() => {
     if (sidebarOpenRef.current && sidebarTabRef.current === 'outline') {
       setSidebarOpen(false);
@@ -330,6 +334,14 @@ function App() {
       setSidebarTab('files');
       setSidebarOpen(true);
     }
+  }, []);
+
+  const toggleSourceMode = useCallback(() => {
+    setSourceMode((v) => {
+      const next = !v;
+      setStatusMessage(next ? '已进入源代码模式' : '已退出源代码模式');
+      return next;
+    });
   }, []);
 
   const buildCurrentExportHtml = useCallback(() => {
@@ -775,13 +787,7 @@ function App() {
       withEditor((ed) => ed.chain().focus().toggleCodeBlock().run()),
     [MENU_EVENT.horizontalRule]: () =>
       withEditor((ed) => ed.chain().focus().setHorizontalRule().run()),
-    [MENU_EVENT.sourceMode]: () => {
-      setSourceMode((v) => {
-        const next = !v;
-        setStatusMessage(next ? '已进入源代码模式' : '已退出源代码模式');
-        return next;
-      });
-    },
+    [MENU_EVENT.sourceMode]: () => toggleSourceMode(),
     [MENU_EVENT.focusMode]: () =>
       withEditor((ed) => {
         const on = toggleFocusMode(ed);
@@ -831,6 +837,25 @@ function App() {
             return;
           }
           unlisteners.push(un);
+        }
+
+        // Finder /「打开方式」传入的文件路径
+        const unOpen = await listen<string[]>('open-paths', (ev) => {
+          for (const path of ev.payload ?? []) {
+            void handleOpenPathRef.current(path);
+          }
+        });
+        if (cancelled) {
+          unOpen();
+          return;
+        }
+        unlisteners.push(unOpen);
+
+        const pending = await takePendingOpenPaths();
+        if (!cancelled) {
+          for (const path of pending) {
+            void handleOpenPathRef.current(path);
+          }
         }
       } catch {
         // 非 Tauri 环境（纯 Vite / 单测）忽略
@@ -1025,6 +1050,15 @@ function App() {
           >
             表格
           </button>
+          <button
+            type="button"
+            className={`app-toolbar__btn${sourceMode ? ' app-toolbar__btn--active' : ''}`}
+            onClick={toggleSourceMode}
+            aria-pressed={sourceMode}
+            title="切换源代码模式与所见即所得（⌘/）"
+          >
+            {sourceMode ? '所见即所得' : '源码模式'}
+          </button>
         </div>
         <button
           type="button"
@@ -1141,6 +1175,8 @@ function App() {
         message={statusMessage}
         spellCheck={spellCheck}
         onToggleSpellCheck={handleToggleSpellCheck}
+        sourceMode={sourceMode}
+        onToggleSourceMode={toggleSourceMode}
       />
 
       {settings ? (

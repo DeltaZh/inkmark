@@ -513,11 +513,13 @@ body {
 
 .status-bar__theme,
 .status-bar__counts,
+.status-bar__mode,
 .status-bar__spell {
   flex-shrink: 0;
   white-space: nowrap;
 }
 
+.status-bar__mode,
 .status-bar__spell {
   appearance: none;
   border: 0;
@@ -530,6 +532,7 @@ body {
   text-underline-offset: 2px;
 }
 
+.status-bar__mode--source,
 .status-bar__spell--on {
   text-decoration-thickness: 2px;
 }

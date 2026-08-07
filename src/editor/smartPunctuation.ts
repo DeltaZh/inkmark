@@ -19,15 +19,32 @@ export const SmartPunctuation = Extension.create({
     return [
       new InputRule({
         find: /--$/,
-        handler: ({ range, chain }) => {
+        handler: ({ range, chain, state }) => {
           if (!enabled()) return null;
+          // 段首仅连字符时留给 `---` + Enter 水平线，不转 en-dash
+          const $from = state.selection.$from;
+          const textBefore = $from.parent.textBetween(
+            0,
+            Math.max(0, range.to - $from.start()),
+            undefined,
+            '\ufffc',
+          );
+          if (/^-*$/.test(textBefore)) return null;
           chain().deleteRange(range).insertContentAt(range.from, '–').run();
         },
       }),
       new InputRule({
         find: /–-$/,
-        handler: ({ range, chain }) => {
+        handler: ({ range, chain, state }) => {
           if (!enabled()) return null;
+          const $from = state.selection.$from;
+          const textBefore = $from.parent.textBetween(
+            0,
+            Math.max(0, range.to - $from.start()),
+            undefined,
+            '\ufffc',
+          );
+          if (/^[–-]*$/.test(textBefore)) return null;
           chain().deleteRange(range).insertContentAt(range.from, '—').run();
         },
       }),

@@ -27,6 +27,7 @@ import {
   EditorShortcuts,
 } from './editorShortcuts';
 import { EditorSelectAll } from './editorSelectAll';
+import { HorizontalRuleOnEnter } from './horizontalRuleOnEnter';
 import {
   editorBlockquoteHTMLAttributes,
   editorCodeBlockHTMLAttributes,
@@ -124,6 +125,7 @@ export function createExtensions(): Extensions {
     }),
     EditorShortcuts,
     EditorSelectAll,
+    HorizontalRuleOnEnter,
     EditorViewModes,
     SmartPunctuation,
   ];

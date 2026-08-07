@@ -7,6 +7,8 @@ export type StatusBarProps = {
   message?: string | null;
   spellCheck?: boolean;
   onToggleSpellCheck?: () => void;
+  sourceMode?: boolean;
+  onToggleSourceMode?: () => void;
 };
 
 function formatPath(path: string | null): string {
@@ -20,12 +22,15 @@ export function StatusBar({
   message,
   spellCheck = true,
   onToggleSpellCheck,
+  sourceMode = false,
+  onToggleSourceMode,
 }: StatusBarProps) {
   const pathLabel = tab ? formatPath(tab.path) : '无打开文档';
   const dirtyLabel = tab?.dirty ? '未保存' : '已保存';
   const words = tab ? countWords(tab.markdown) : 0;
   const chars = tab ? countChars(tab.markdown) : 0;
   const themeLabel = themeName?.trim() || '默认主题';
+  const modeLabel = sourceMode ? '源码模式' : '所见即所得';
 
   return (
     <footer className="status-bar" role="status">
@@ -35,6 +40,21 @@ export function StatusBar({
       <span className="status-bar__theme" title="当前主题">
         主题：{themeLabel}
       </span>
+      {onToggleSourceMode ? (
+        <button
+          type="button"
+          className={`status-bar__mode${sourceMode ? ' status-bar__mode--source' : ''}`}
+          onClick={onToggleSourceMode}
+          title="切换源代码模式与所见即所得（⌘/）"
+          aria-pressed={sourceMode}
+        >
+          模式：{modeLabel}
+        </button>
+      ) : (
+        <span className="status-bar__mode" title="当前编辑模式">
+          模式：{modeLabel}
+        </span>
+      )}
       {tab ? (
         <span
           className={`status-bar__dirty${tab.dirty ? ' status-bar__dirty--yes' : ''}`}
