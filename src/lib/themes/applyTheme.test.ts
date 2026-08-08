@@ -12,14 +12,14 @@ describe('applyThemeCss', () => {
 
   it('injects style tag content', () => {
     applyThemeCss('/* hello */', 'default');
-    const el = document.getElementById('delta-ink-theme');
+    const el = document.getElementById('inkmark-theme');
     expect(el?.textContent).toContain('hello');
   });
 
   it('replaces previous theme and sets scheme dataset', () => {
     applyThemeCss('a', 'github');
     applyThemeCss(':root { --bg-color: #111111; }', 'night');
-    expect(document.querySelectorAll('#delta-ink-theme')).toHaveLength(1);
+    expect(document.querySelectorAll('#inkmark-theme')).toHaveLength(1);
     expect(document.documentElement.dataset.theme).toBe('night');
     expect(document.documentElement.dataset.themeScheme).toBe('dark');
   });

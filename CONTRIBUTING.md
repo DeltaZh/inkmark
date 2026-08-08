@@ -1,4 +1,4 @@
-# Contributing to delta-ink
+# Contributing to Inkmark
 
 Thank you for your interest in contributing!
 

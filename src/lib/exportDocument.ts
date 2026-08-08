@@ -2,7 +2,7 @@ import { WRITE_ROOT_ID } from '../editor/editorDom';
 import editorBaseCss from '../../resources/editor/base.css?raw';
 import githubCss from '../../resources/editor/themes/github.css?raw';
 
-const THEME_STYLE_ID = 'delta-ink-theme';
+const THEME_STYLE_ID = 'inkmark-theme';
 
 const EXPORT_BASE_CSS = `
 html, body {

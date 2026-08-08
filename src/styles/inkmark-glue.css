@@ -260,10 +260,41 @@
 #write .tableWrapper {
   overflow-x: auto;
   margin: 0.75em 0;
+  max-width: 100%;
 }
 
-#write .tableWrapper > table {
+#write .tableWrapper > table,
+#write table.md-table {
   margin: 0;
+  width: 100%;
+  min-width: 100% !important; /* 覆盖 TipTap col 默认 min-width:50px 造成的「窄条」 */
+  table-layout: auto;
+  border-collapse: collapse;
+  overflow: visible; /* overflow 写在 table 上在 WebKit 里表现异常 */
+}
+
+#write .tableWrapper col {
+  min-width: 0 !important;
+}
+
+/* 单元格内是 TipTap 段落节点；勿沿用正文 p 的大间距 / width:inherit */
+#write .md-table th > p,
+#write .md-table td > p,
+#write table th > p,
+#write table td > p,
+#write .md-table th > .md-p,
+#write .md-table td > .md-p {
+  margin: 0;
+  width: auto;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+}
+
+#write .md-table th,
+#write table th {
+  font-weight: 600;
+  background: color-mix(in srgb, currentColor 6%, transparent);
 }
 
 #write img.md-image {

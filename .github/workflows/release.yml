@@ -21,7 +21,7 @@ jobs:
         run: npm run tauri build -- --bundles dmg
       - uses: actions/upload-artifact@v4
         with:
-          name: delta-ink-macos
+          name: inkmark-macos
           path: src-tauri/target/release/bundle/dmg/*.dmg
           if-no-files-found: error
 
@@ -39,7 +39,7 @@ jobs:
         run: npm run tauri build -- --bundles nsis,msi
       - uses: actions/upload-artifact@v4
         with:
-          name: delta-ink-windows
+          name: inkmark-windows
           path: |
             src-tauri/target/release/bundle/nsis/*.exe
             src-tauri/target/release/bundle/msi/*.msi

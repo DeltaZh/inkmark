@@ -20,10 +20,10 @@ npm run tauri build -- --bundles nsis,msi
 
 ## macOS 安装后
 
-构建目录 `src-tauri/target/release/bundle/macos/delta-ink.app` 会被 Spotlight 搜到。若已复制到 `/Applications`，可运行：
+构建目录 `src-tauri/target/release/bundle/macos/Inkmark.app` 会被 Spotlight 搜到。若已复制到 `/Applications`，可运行：
 
 ```bash
 ./scripts/exclude-build-from-spotlight.sh
 ```
 
-以注销并删除构建目录中的副本，避免出现两个 delta-ink。
+以注销并删除构建目录中的副本，避免出现两个 Inkmark。

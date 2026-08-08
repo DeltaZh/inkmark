@@ -1,5 +1,5 @@
 /**
- * delta-ink editor base (MIT)
+ * inkmark editor base (MIT)
  * TipTap DOM hooks: #write, .md-fences, .md-task-list-item, .code-tooltip, …
  */
 
@@ -251,7 +251,6 @@ ul[data-type='taskList'] {
   border-spacing: 0;
   width: 100%;
   margin: 0.75em 0;
-  overflow: auto;
   text-align: left;
 }
 
@@ -261,6 +260,16 @@ ul[data-type='taskList'] {
 #write td {
   border: 1px solid #ddd;
   padding: 6px 13px;
+  vertical-align: top;
+}
+
+.md-table th > p,
+.md-table td > p,
+#write th > p,
+#write td > p {
+  margin: 0;
+  width: auto;
+  white-space: normal;
 }
 
 .md-table tr:nth-child(2n),

@@ -15,7 +15,7 @@ import { formatFileError, saveImageAsset } from '../ipc/files';
 import { createExtensions } from './extensions';
 import { WRITE_ROOT_ID } from './editorDom';
 import '../styles/editor-vendor.css';
-import '../styles/delta-ink-glue.css';
+import '../styles/inkmark-glue.css';
 
 function resolveImagePos(
   view: EditorView,

@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    delta_ink_lib::run()
+    inkmark_lib::run()
 }

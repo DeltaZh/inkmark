@@ -17,7 +17,7 @@ export function HelpDialog({ open, onClose, onOpenReadme }: HelpDialogProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <header className="settings-dialog__header">
-          <h2 id="help-dialog-title">delta-ink 帮助</h2>
+          <h2 id="help-dialog-title">Inkmark 帮助</h2>
           <button
             type="button"
             className="settings-dialog__close"

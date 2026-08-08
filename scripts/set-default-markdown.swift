@@ -1,7 +1,7 @@
 import Foundation
 import CoreServices
 
-let bundleId = "app.delta.ink" as NSString
+let bundleId = "app.inkmark" as NSString
 let mdTypes = [
   "net.daringfireball.markdown",
   "public.markdown",

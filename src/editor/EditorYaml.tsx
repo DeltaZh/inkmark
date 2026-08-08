@@ -1,6 +1,7 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
+import { looksLikeYamlFrontMatter } from './yamlFrontMatter';
 
 function YamlNodeView(_props: NodeViewProps) {
   return (
@@ -13,7 +14,8 @@ function YamlNodeView(_props: NodeViewProps) {
 }
 
 /**
- * Editor YAML Front Matter：文档开头 `--- ... ---`。
+ * Editor YAML Front Matter：仅文档开头的 `--- ... ---`。
+ * 文中用作水平分割线的 `---` 不得匹配（否则会吞掉中间标题/表格）。
  */
 export const EditorYaml = Node.create({
   name: 'yamlFrontMatter',
@@ -56,18 +58,34 @@ export const EditorYaml = Node.create({
   markdownTokenizer: {
     name: 'yamlFrontMatter',
     level: 'block',
-    start: (src: string) => (src.startsWith('---\n') || src.startsWith('---\r\n') ? 0 : -1),
-    tokenize: (src: string) => {
-      if (!src.startsWith('---')) return undefined;
+    start: (src: string) =>
+      src.startsWith('---\n') || src.startsWith('---\r\n') ? 0 : -1,
+    tokenize: (src: string, tokens: unknown[]) => {
+      // 已有前置块 → 不是文档开头，留给水平线 / 正文
+      if (Array.isArray(tokens) && tokens.length > 0) return undefined;
+      if (!src.startsWith('---\n') && !src.startsWith('---\r\n')) {
+        return undefined;
+      }
       const end = src.indexOf('\n---', 3);
       if (end < 0) return undefined;
-      const raw = src.slice(0, end + 4);
-      // consume trailing newline after closing ---
-      const consumed = raw + (src[end + 4] === '\n' ? '\n' : '');
-      const text = src.slice(4, end).replace(/^\n/, '');
+
+      // 闭合 --- 后须为换行或文末，避免误吃表格分隔行
+      const afterClose = src[end + 4];
+      if (afterClose != null && afterClose !== '\n' && afterClose !== '\r') {
+        return undefined;
+      }
+
+      const text = src.slice(src.startsWith('---\r\n') ? 5 : 4, end).replace(/^\n/, '');
+      if (!looksLikeYamlFrontMatter(text)) return undefined;
+
+      const closeLen = 4; // \n---
+      let rawEnd = end + closeLen;
+      if (src[rawEnd] === '\r') rawEnd += 1;
+      if (src[rawEnd] === '\n') rawEnd += 1;
+
       return {
         type: 'yamlFrontMatter',
-        raw: consumed.startsWith('---') ? (src.startsWith('---\n') ? `---\n${text}\n---\n` : raw) : raw,
+        raw: src.slice(0, rawEnd),
         text,
       };
     },
@@ -78,7 +96,6 @@ export const EditorYaml = Node.create({
       insertYamlFrontMatter:
         (content = 'title: \n') =>
         ({ commands, state }) => {
-          // 仅允许插在文档开头
           if (state.doc.firstChild?.type.name === 'yamlFrontMatter') {
             return false;
           }

@@ -56,7 +56,7 @@ export function patchThemeCss(name: string, css: string): string {
   // （主题 <style> 最后注入，保证优先级压过 vendor）
   return `${css}
 
-/* delta-ink shell bridge */
+/* inkmark shell bridge */
 :root, html { color-scheme: ${scheme}; }
 .app-shell, .app-toolbar, .left-sidebar, .tab-bar, .status-bar, .find-replace-bar {
   background: var(--side-bar-bg-color, var(--bg-color));

@@ -464,7 +464,7 @@ mod tests {
 
     #[test]
     fn get_file_mtime_increases_after_rewrite() {
-        let path = std::env::temp_dir().join("delta-ink-mtime-test.md");
+        let path = std::env::temp_dir().join("inkmark-mtime-test.md");
         write_file(path.to_string_lossy().into_owned(), "a\n".into()).unwrap();
         let t1 = get_file_mtime(path.to_string_lossy().into_owned()).unwrap();
         std::thread::sleep(std::time::Duration::from_millis(20));

@@ -155,7 +155,7 @@ pub fn rebuild(app: &AppHandle<Wry>) -> tauri::Result<()> {
     // —— 窗口 ——
     let always_on_top = item(app, "always-on-top", "保持窗口在最前端", None)?;
 
-    let app_submenu = SubmenuBuilder::new(app, "delta-ink")
+    let app_submenu = SubmenuBuilder::new(app, "Inkmark")
         .about(Some(AboutMetadata {
             ..Default::default()
         }))
@@ -284,7 +284,7 @@ pub fn rebuild(app: &AppHandle<Wry>) -> tauri::Result<()> {
         .fullscreen()
         .build()?;
 
-    let help_item = item(app, "help", "delta-ink 帮助", None)?;
+    let help_item = item(app, "help", "Inkmark 帮助", None)?;
     let help_readme = item(app, "help-readme", "打开 README…", None)?;
     let help_submenu = SubmenuBuilder::new(app, "帮助")
         .item(&help_item)

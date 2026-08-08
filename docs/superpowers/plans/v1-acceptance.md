@@ -1,6 +1,6 @@
-# delta-ink v1 验收清单
+# inkmark v1 验收清单
 
-依据 [设计规格 §8](../specs/2026-08-06-delta-ink-design.md) 与 §6 功能清单。  
+依据 [设计规格 §8](../specs/2026-08-06-inkmark-design.md) 与 §6 功能清单。  
 **自动化**项由 CI / 本地 `npm test` 覆盖；**手工**项需在 `npm run tauri dev` 或打包产物中勾选。
 
 ---
@@ -44,7 +44,7 @@
 - [ ] 设置中 **关闭「读取 参考编辑器 主题」** 后，列表仅显示自有 / 内置主题
 - [ ] 重新 **开启** 后 参考编辑器 主题再次出现
 - [ ] 工具栏「导入主题」打开系统文件选择器，可选任意路径的 `*.css`
-- [ ] 导入后文件复制到 `~/Library/Application Support/delta-ink/themes`（同名覆盖），列表出现并可切换
+- [ ] 导入后文件复制到 `~/Library/Application Support/app.inkmark/themes`（同名覆盖），列表出现并可切换
 - [ ] 主题 CSS 加载失败时回退内置默认主题并提示用户
 
 ---

@@ -2,7 +2,7 @@ import { convertFileSrc } from '@tauri-apps/api/core';
 import { isTauri } from '../isTauri';
 import { resolveThemeColorScheme } from './patches';
 
-const STYLE_ID = 'delta-ink-theme';
+const STYLE_ID = 'inkmark-theme';
 
 /** 将 Rust 侧 rewrite 出的 file:// URL 转为 Tauri asset 协议，便于 WebView 加载字体/图片。 */
 export function rewriteThemeAssetUrls(css: string): string {

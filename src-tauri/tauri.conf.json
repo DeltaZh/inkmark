@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "delta-ink",
+  "productName": "Inkmark",
   "version": "0.1.0",
-  "identifier": "app.delta.ink",
+  "identifier": "app.inkmark",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "delta-ink",
+        "title": "Inkmark",
         "width": 800,
         "height": 600
       }
@@ -25,7 +25,7 @@
           "$RESOURCE/**",
           "$APPDATA/**",
           "$HOME/Library/Application Support/abnerworks.Typora/themes/**",
-          "$HOME/**/delta-ink*/**/resources/themes/**",
+          "$HOME/**/inkmark*/**/resources/themes/**",
           "$HOME/**/cursorProject/**/resources/themes/**"
         ]
       }
@@ -72,4 +72,3 @@
     }
   }
 }
-

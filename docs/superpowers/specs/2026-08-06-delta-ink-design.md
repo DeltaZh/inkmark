@@ -1,4 +1,4 @@
-# delta-ink 设计规格
+# Inkmark 设计规格
 
 **日期：** 2026-08-06  
 **状态：** 待用户审阅  
@@ -7,7 +7,7 @@
 
 ## 1. 目标
 
-构建一款 Mac 上的 Markdown 编辑器 **delta-ink**，核心体验对齐 参考编辑器：
+构建一款 Mac 上的 Markdown 编辑器 **Inkmark**，核心体验对齐 参考编辑器：
 
 - **所见即所得（WYSIWYG）**编辑，而非左右分栏预览
 - **高兼容**加载现有 参考编辑器 主题 CSS（尽量直接使用，必要时用适配层/补丁）
@@ -34,7 +34,7 @@
 | 技术栈 | Tauri 2 + Web 编辑器 |
 | 主题兼容 | 高兼容（直接加载 参考编辑器 CSS + DOM 适配） |
 | 主题来源 | 参考编辑器 目录 + 应用自有目录（可开关） |
-| 项目名 | `delta-ink`（含昵称 delta） |
+| 项目名 | `Inkmark` |
 | 发布 | 落地按 GitHub 标准，最终上传 GitHub |
 
 ## 4. 架构
@@ -95,7 +95,7 @@
 ### 5.3 主题发现
 
 1. 参考编辑器：`~/Library/Application Support/abnerworks.参考编辑器/themes`
-2. 应用自有：`~/Library/Application Support/delta-ink/themes`（名称以实际 bundle id / app 名为准，文档与代码保持一致）
+2. 应用自有：`~/Library/Application Support/Inkmark/themes`（名称以实际 bundle id / app 名为准，文档与代码保持一致）
 3. 设置项：`read参考编辑器Themes: boolean`（默认 `true`）
 4. 支持将 `.css` 导入到自有目录
 5. 列表去重：同名时 **自有目录优先**，UI 标注来源（参考编辑器 / 本地）
@@ -166,7 +166,7 @@
 ### 9.1 仓库结构（目标形态）
 
 ```
-delta-ink/
+Inkmark/
 ├── README.md                 # 英文为主，含中文简介可选；徽章、截图位、快速开始
 ├── LICENSE                   # 明确 SPDX（实现时选定，默认建议 MIT，除非另有要求）
 ├── CONTRIBUTING.md           # 如何开发、提交、PR
@@ -218,7 +218,7 @@ delta-ink/
 
 ## 12. 开放细节（实现计划中敲定，规格层已约束方向）
 
-- 具体 bundle identifier（建议 `com.delta.ink` 或 `app.delta.ink`）
+- 具体 bundle identifier（建议 `app.inkmark` 或 `app.inkmark`）
 - LICENSE 最终选择（默认 MIT）
 - TipTap 扩展包版本与 Markdown 序列化库选型
 - 「源码态」交互的精细度（第一版最低标准：真 WYSIWYG，非分栏）

@@ -130,7 +130,7 @@ pub async fn export_pdf(handle: AppHandle, html: String) -> Result<ExportedFile,
     let pdf_path_str = path_to_string(pdf_path.clone())?;
 
     let temp_dir = std::env::temp_dir().join(format!(
-        "delta-ink-export-{}",
+        "inkmark-export-{}",
         std::process::id()
     ));
     fs::create_dir_all(&temp_dir).map_err(|e| format!("无法创建临时目录：{e}"))?;

@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug to help us improve delta-ink
+about: Report a bug to help us improve Inkmark
 title: "[Bug] "
 labels: bug
 assignees: ''
@@ -27,7 +27,7 @@ What actually happened.
 ## Environment
 
 - macOS version:
-- delta-ink version:
+- Inkmark version:
 - Node.js version (if building from source):
 
 ## Additional context

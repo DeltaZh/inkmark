@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for delta-ink
+about: Suggest an idea for Inkmark
 title: "[Feature] "
 labels: enhancement
 assignees: ''
