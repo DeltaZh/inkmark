@@ -36,7 +36,9 @@ export function HelpDialog({ open, onClose, onOpenReadme }: HelpDialogProps) {
             <li>文件 → 打开 / 打开文件夹 / 快速打开 / 导入（Markdown、HTML、Word）</li>
             <li>文件 → 导出 HTML（含/无样式）/ PDF / Word，或打印</li>
             <li>编辑 → 拼写检查、复制到 MS Word（也可点状态栏切换拼写）</li>
-            <li>视图 → 大纲、文件树、源代码 / 专注 / 打字机模式</li>
+            <li>
+              视图 → 大纲、文件树、源代码；专注模式（F8，再按取消）/ 打字机模式（F9，再按取消）
+            </li>
             <li>图片：右键 → 缩放图片（写入 <code>style=&quot;zoom:N%&quot;</code>）</li>
           </ul>
 
@@ -44,7 +46,7 @@ export function HelpDialog({ open, onClose, onOpenReadme }: HelpDialogProps) {
           <ul>
             <li>⌘N 新建 · ⌘O 打开 · ⌘⇧P 快速打开 · ⌘S 保存 · ⌘P 打印</li>
             <li>⌘B / ⌘I / ⌘U 加粗 / 斜体 / 下划线</li>
-            <li>⌘1–6 标题 · ⌘F 查找 · ⌘/ 源代码模式</li>
+            <li>⌘1–6 标题 · ⌘F 查找 · ⌘/ 源代码模式 · F8 专注 · F9 打字机</li>
           </ul>
 
           <p className="help-dialog__hint">

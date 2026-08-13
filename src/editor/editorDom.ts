@@ -3,15 +3,16 @@
 export const WRITE_ROOT_ID = 'write';
 
 export const editorHeadingHTMLAttributes: Record<string, string> = {
-  class: 'md-heading',
+  // md-end-block：对齐 Typora 专注模式主题钩子
+  class: 'md-heading md-end-block',
 };
 
 export const editorParagraphHTMLAttributes: Record<string, string> = {
-  class: 'md-p',
+  class: 'md-p md-end-block',
 };
 
 export const editorCodeBlockHTMLAttributes: Record<string, string> = {
-  class: 'md-fences',
+  class: 'md-fences md-end-block',
 };
 
 export const editorBlockquoteHTMLAttributes: Record<string, string> = {

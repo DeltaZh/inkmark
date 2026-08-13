@@ -1,9 +1,73 @@
 use crate::settings::store;
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{
-    menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, PredefinedMenuItem, SubmenuBuilder},
+    menu::{
+        AboutMetadata, CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder, MenuItemKind,
+        PredefinedMenuItem, SubmenuBuilder,
+    },
     App, AppHandle, Emitter, Manager, Wry,
 };
+
+/// 重建菜单时保留勾选状态（专注 / 打字机）
+static FOCUS_MODE_CHECKED: AtomicBool = AtomicBool::new(false);
+static TYPEWRITER_MODE_CHECKED: AtomicBool = AtomicBool::new(false);
+
+fn check_item(
+    app: &AppHandle<Wry>,
+    id: &str,
+    title: &str,
+    accelerator: Option<&str>,
+    checked: bool,
+) -> tauri::Result<tauri::menu::CheckMenuItem<Wry>> {
+    let mut b = CheckMenuItemBuilder::with_id(id, title).checked(checked);
+    if let Some(acc) = accelerator {
+        b = b.accelerator(acc);
+    }
+    b.build(app)
+}
+
+fn find_check_item(app: &AppHandle<Wry>, id: &str) -> Option<tauri::menu::CheckMenuItem<Wry>> {
+    let menu = app.menu()?;
+    let items = menu.items().ok()?;
+    for kind in items {
+        if let Some(found) = find_check_in_kind(&kind, id) {
+            return Some(found);
+        }
+    }
+    None
+}
+
+fn find_check_in_kind(
+    kind: &MenuItemKind<Wry>,
+    id: &str,
+) -> Option<tauri::menu::CheckMenuItem<Wry>> {
+    match kind {
+        MenuItemKind::Check(item) if item.id().as_ref() == id => Some(item.clone()),
+        MenuItemKind::Submenu(sub) => {
+            let items = sub.items().ok()?;
+            for child in items {
+                if let Some(found) = find_check_in_kind(&child, id) {
+                    return Some(found);
+                }
+            }
+            None
+        }
+        _ => None,
+    }
+}
+
+/// 同步原生菜单勾选（快捷键或前端切换后调用）
+pub fn set_view_mode_checked(app: &AppHandle<Wry>, focus: bool, typewriter: bool) {
+    FOCUS_MODE_CHECKED.store(focus, Ordering::Relaxed);
+    TYPEWRITER_MODE_CHECKED.store(typewriter, Ordering::Relaxed);
+    if let Some(item) = find_check_item(app, "focus-mode") {
+        let _ = item.set_checked(focus);
+    }
+    if let Some(item) = find_check_item(app, "typewriter-mode") {
+        let _ = item.set_checked(typewriter);
+    }
+}
 
 fn item(
     app: &AppHandle<Wry>,
@@ -149,8 +213,20 @@ pub fn rebuild(app: &AppHandle<Wry>) -> tauri::Result<()> {
         "切换源代码 / 所见即所得",
         Some("CmdOrCtrl+/"),
     )?;
-    let focus_mode = item(app, "focus-mode", "专注模式", None)?;
-    let typewriter = item(app, "typewriter-mode", "打字机模式", None)?;
+    let focus_mode = check_item(
+        app,
+        "focus-mode",
+        "专注模式",
+        Some("F8"),
+        FOCUS_MODE_CHECKED.load(Ordering::Relaxed),
+    )?;
+    let typewriter = check_item(
+        app,
+        "typewriter-mode",
+        "打字机模式",
+        Some("F9"),
+        TYPEWRITER_MODE_CHECKED.load(Ordering::Relaxed),
+    )?;
 
     // —— 窗口 ——
     let always_on_top = item(app, "always-on-top", "保持窗口在最前端", None)?;
@@ -324,6 +400,20 @@ fn emit_menu_event(app: &AppHandle<Wry>, id: &str) {
                 let _ = app.emit("menu://open-recent", path.clone());
             }
         }
+        return;
+    }
+    // 勾选项：原生已翻转 checked，把最新状态交给前端（支持开/关）
+    if id == "focus-mode" || id == "typewriter-mode" {
+        let checked = find_check_item(app, id)
+            .and_then(|item| item.is_checked().ok())
+            .unwrap_or(false);
+        if id == "focus-mode" {
+            FOCUS_MODE_CHECKED.store(checked, Ordering::Relaxed);
+        } else {
+            TYPEWRITER_MODE_CHECKED.store(checked, Ordering::Relaxed);
+        }
+        let event_name = format!("menu://{id}");
+        let _ = app.emit(event_name.as_str(), checked);
         return;
     }
     let event_name = format!("menu://{id}");

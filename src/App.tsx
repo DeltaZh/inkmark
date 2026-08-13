@@ -65,9 +65,11 @@ import {
   runParagraph,
 } from './lib/editorCommands';
 import {
-  toggleFocusMode,
-  toggleTypewriterMode,
+  getViewModeFlags,
+  setFocusMode,
+  setTypewriterMode,
 } from './editor/viewModes';
+import { setViewModeMenuChecked } from './ipc/viewModes';
 import { toggleSmartPunctuation } from './editor/smartPunctuation';
 import { pushRecentFile } from './lib/recentFiles';
 import {
@@ -133,11 +135,19 @@ function App() {
   const [spellCheck, setSpellCheck] = useState(true);
   const [openQuickOpen, setOpenQuickOpen] = useState(false);
   const [quickEntries, setQuickEntries] = useState<QuickOpenEntry[]>([]);
+  const [focusModeOn, setFocusModeOn] = useState(false);
+  const [typewriterModeOn, setTypewriterModeOn] = useState(false);
 
   const sidebarOpenRef = useRef(sidebarOpen);
   sidebarOpenRef.current = sidebarOpen;
   const sidebarTabRef = useRef(sidebarTab);
   sidebarTabRef.current = sidebarTab;
+  const focusModeOnRef = useRef(focusModeOn);
+  focusModeOnRef.current = focusModeOn;
+  const typewriterModeOnRef = useRef(typewriterModeOn);
+  typewriterModeOnRef.current = typewriterModeOn;
+  /** 进入专注前侧栏是否打开，退出时还原 */
+  const sidebarBeforeFocusRef = useRef<boolean | null>(null);
 
   const activeMarkdownRef = useRef(activeTab?.markdown ?? '');
   activeMarkdownRef.current = activeTab?.markdown ?? '';
@@ -343,6 +353,56 @@ function App() {
       return next;
     });
   }, []);
+
+  const syncViewModeMenu = useCallback((focus: boolean, typewriter: boolean) => {
+    void setViewModeMenuChecked(focus, typewriter).catch(() => {
+      /* 非 Tauri / 菜单未就绪 */
+    });
+  }, []);
+
+  /** 专注模式：淡化非当前块 + 最大化写作区；可再次关闭 */
+  const applyFocusMode = useCallback(
+    (on: boolean) => {
+      const ed = editorRef.current;
+      if (!ed) {
+        setStatusMessage('请先聚焦编辑器');
+        // 菜单勾选可能已翻转，拉回真实状态
+        syncViewModeMenu(focusModeOnRef.current, typewriterModeOnRef.current);
+        return;
+      }
+      setFocusMode(ed, on);
+      setFocusModeOn(on);
+      if (on) {
+        if (sidebarBeforeFocusRef.current === null) {
+          sidebarBeforeFocusRef.current = sidebarOpenRef.current;
+        }
+        setSidebarOpen(false);
+      } else if (sidebarBeforeFocusRef.current !== null) {
+        setSidebarOpen(sidebarBeforeFocusRef.current);
+        sidebarBeforeFocusRef.current = null;
+      }
+      syncViewModeMenu(on, typewriterModeOnRef.current);
+      setStatusMessage(on ? '已开启专注模式' : '已关闭专注模式');
+    },
+    [syncViewModeMenu],
+  );
+
+  /** 打字机模式：光标垂直居中；可再次关闭 */
+  const applyTypewriterMode = useCallback(
+    (on: boolean) => {
+      const ed = editorRef.current;
+      if (!ed) {
+        setStatusMessage('请先聚焦编辑器');
+        syncViewModeMenu(focusModeOnRef.current, typewriterModeOnRef.current);
+        return;
+      }
+      setTypewriterMode(ed, on);
+      setTypewriterModeOn(on);
+      syncViewModeMenu(focusModeOnRef.current, on);
+      setStatusMessage(on ? '已开启打字机模式' : '已关闭打字机模式');
+    },
+    [syncViewModeMenu],
+  );
 
   const buildCurrentExportHtml = useCallback(() => {
     if (!editorRef.current) {
@@ -788,16 +848,16 @@ function App() {
     [MENU_EVENT.horizontalRule]: () =>
       withEditor((ed) => ed.chain().focus().setHorizontalRule().run()),
     [MENU_EVENT.sourceMode]: () => toggleSourceMode(),
-    [MENU_EVENT.focusMode]: () =>
-      withEditor((ed) => {
-        const on = toggleFocusMode(ed);
-        setStatusMessage(on ? '已开启专注模式' : '已关闭专注模式');
-      }),
-    [MENU_EVENT.typewriterMode]: () =>
-      withEditor((ed) => {
-        const on = toggleTypewriterMode(ed);
-        setStatusMessage(on ? '已开启打字机模式' : '已关闭打字机模式');
-      }),
+    [MENU_EVENT.focusMode]: (payload) => {
+      const on =
+        typeof payload === 'boolean' ? payload : !focusModeOnRef.current;
+      applyFocusMode(on);
+    },
+    [MENU_EVENT.typewriterMode]: (payload) => {
+      const on =
+        typeof payload === 'boolean' ? payload : !typewriterModeOnRef.current;
+      applyTypewriterMode(on);
+    },
     [MENU_EVENT.bold]: () =>
       withEditor((ed) => ed.chain().focus().toggleBold().run()),
     [MENU_EVENT.italic]: () =>
@@ -872,6 +932,20 @@ function App() {
   useEffect(() => {
     const inTauri = isTauri();
     const onKeyDown = (e: KeyboardEvent) => {
+      // F8 / F9：浏览器开发态；Tauri 由菜单加速键触发（带勾选状态）
+      if (!inTauri && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (e.key === 'F8') {
+          e.preventDefault();
+          applyFocusMode(!focusModeOnRef.current);
+          return;
+        }
+        if (e.key === 'F9') {
+          e.preventDefault();
+          applyTypewriterMode(!typewriterModeOnRef.current);
+          return;
+        }
+      }
+
       const action = resolveAppKeyboardAction(e, inTauri);
       if (!action) return;
       e.preventDefault();
@@ -901,7 +975,27 @@ function App() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [handleSave, handleSaveAs, handleOpen, handleCloseActiveTab, createTab]);
+  }, [
+    handleSave,
+    handleSaveAs,
+    handleOpen,
+    handleCloseActiveTab,
+    createTab,
+    applyFocusMode,
+    applyTypewriterMode,
+  ]);
+
+  // 编辑器重建后，把 React 侧模式状态写回（避免丢勾选效果）
+  useEffect(() => {
+    if (!editorInstance) return;
+    const flags = getViewModeFlags(editorInstance);
+    if (focusModeOn && !flags.focusMode) {
+      setFocusMode(editorInstance, true);
+    }
+    if (typewriterModeOn && !flags.typewriterMode) {
+      setTypewriterMode(editorInstance, true);
+    }
+  }, [editorInstance, focusModeOn, typewriterModeOn]);
 
   useEffect(() => {
     if (!statusMessage) return;
@@ -996,7 +1090,7 @@ function App() {
   }, []);
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell${focusModeOn ? ' is-focus-mode' : ''}`}>
       <header className="app-toolbar">
         {settings ? (
           <ThemePicker

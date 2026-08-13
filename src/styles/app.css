@@ -1205,7 +1205,49 @@ html[data-theme-scheme='dark'] .md-grid-board__cell:hover {
 
 
 
-/* Editor 专注模式：非当前块降对比度 */
+/* 专注模式：最大化写作区（藏侧栏/工具栏），非当前块用字色淡化（非模糊） */
+.app-shell.is-focus-mode .left-sidebar,
+.app-shell.is-focus-mode .app-toolbar {
+  display: none;
+}
+
+.app-shell.is-focus-mode .app-main {
+  /* 内容区吃满 */
+  flex: 1;
+}
+
+.app-shell.is-focus-mode .editor-root {
+  padding-top: 8px;
+}
+
+:root {
+  --blur-text-color: color-mix(in srgb, var(--text-color) 42%, var(--bg-color));
+}
+
+body.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container),
+body.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) * {
+  color: var(--blur-text-color) !important;
+}
+
+body.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) img {
+  opacity: 0.45;
+}
+
+body.on-focus-mode li:not(.md-focus-container) {
+  color: var(--blur-text-color);
+}
+
+body.on-focus-mode .md-focus,
+body.on-focus-mode .md-focus-container,
+body.on-focus-mode .md-focus *,
+body.on-focus-mode .md-focus-container * {
+  color: var(--text-color) !important;
+}
+
+body.on-focus-mode .md-focus img,
+body.on-focus-mode .md-focus-container img {
+  opacity: 1;
+}
 
 
 /* 公式 */

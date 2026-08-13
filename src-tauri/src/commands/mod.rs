@@ -3,3 +3,4 @@ pub mod files;
 pub mod images;
 pub mod settings;
 pub mod themes;
+pub mod view_modes;

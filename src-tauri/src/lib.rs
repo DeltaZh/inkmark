@@ -14,6 +14,7 @@ use commands::files::{
 use commands::images;
 use commands::settings::{get_settings, save_settings};
 use commands::themes::{import_theme_css, import_theme_from_path, list_themes, read_theme_css};
+use commands::view_modes::set_view_mode_menu_checked;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use tauri::Emitter;
 use tauri::Manager;
@@ -92,6 +93,7 @@ pub fn run() {
             export_binary,
             open_readme,
             take_pending_open_paths,
+            set_view_mode_menu_checked,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
